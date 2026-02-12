@@ -10,6 +10,7 @@ import { defaultThreeJSDependencies } from './AvatarSystemDI';
 import { isWebGLAvailable } from './WebGLDetection';
 import { AvatarMeshBuilderImpl } from './AvatarMeshBuilder';
 import type { AvatarParts } from './AvatarMeshBuilder';
+import { validateCustomizationData } from './CustomizationValidator';
 
 export class AvatarSystemImpl {
   private scene: THREE.Scene | null = null;
@@ -179,8 +180,69 @@ export class AvatarSystemImpl {
       throw new Error(`Avatar ${avatarId} not found`);
     }
 
+    // Validate customization data
+    if (!validateCustomizationData(customization)) {
+      throw new Error('Invalid customization data');
+    }
+
+    // Remove old mesh from scene
+    if (this.scene) {
+      this.scene.remove(avatar.mesh);
+    }
+
+    // Build new avatar parts with updated customization
+    const parts: AvatarParts = {
+      head: this.meshBuilder.buildHead(
+        customization.bodyParts.head,
+        customization.colors.skin
+      ),
+      torso: this.meshBuilder.buildTorso(
+        customization.bodyParts.torso,
+        customization.colors.clothing
+      ),
+      arms: this.meshBuilder.buildArms(
+        customization.bodyParts.arms,
+        customization.colors.skin
+      ),
+      legs: this.meshBuilder.buildLegs(
+        customization.bodyParts.legs,
+        customization.colors.clothing
+      ),
+      accessories: [],
+    };
+
+    // Add accessories if present
+    if (customization.accessories.hat) {
+      parts.accessories.push(
+        this.meshBuilder.buildAccessory(customization.accessories.hat, 'head')
+      );
+    }
+    if (customization.accessories.weapon) {
+      parts.accessories.push(
+        this.meshBuilder.buildAccessory(customization.accessories.weapon, 'rightHand')
+      );
+    }
+    if (customization.accessories.shield) {
+      parts.accessories.push(
+        this.meshBuilder.buildAccessory(customization.accessories.shield, 'leftHand')
+      );
+    }
+
+    // Assemble new avatar mesh
+    const newMesh = this.meshBuilder.assembleAvatar(parts);
+    newMesh.name = avatar.mesh.name;
+    newMesh.position.copy(avatar.mesh.position);
+    newMesh.rotation.copy(avatar.mesh.rotation);
+    newMesh.scale.copy(avatar.mesh.scale);
+
+    // Update avatar
+    avatar.mesh = newMesh;
     avatar.customization = customization;
-    // Actual mesh update will be implemented in later tasks
+
+    // Add new mesh to scene
+    if (this.scene) {
+      this.scene.add(newMesh);
+    }
   }
 
   playAnimation(avatarId: string, _state: AnimationState): void {

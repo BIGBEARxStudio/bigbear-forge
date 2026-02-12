@@ -210,12 +210,106 @@ describe('AvatarSystem', () => {
       expect(avatar?.customization.colors).toEqual(newCustomization.colors);
     });
 
+    it('should rebuild avatar mesh when customization changes', async () => {
+      await avatarSystem.initialize(mockCanvas);
+      const originalAvatar = avatarSystem.createAvatar(testPreset);
+      const originalMesh = originalAvatar.mesh;
+
+      const newCustomization = {
+        ...testPreset.customization,
+        colors: {
+          skin: '#ffffff',
+          hair: '#000000',
+          clothing: '#ff0000',
+        },
+      };
+
+      avatarSystem.updateAvatar('test_avatar', newCustomization);
+
+      const updatedAvatar = avatarSystem.getAvatar('test_avatar');
+      expect(updatedAvatar?.mesh).not.toBe(originalMesh);
+    });
+
+    it('should preserve avatar position and rotation when updating', async () => {
+      await avatarSystem.initialize(mockCanvas);
+      const avatar = avatarSystem.createAvatar(testPreset);
+      
+      // Set custom position and rotation
+      avatar.mesh.position.set(1, 2, 3);
+      avatar.mesh.rotation.set(0.1, 0.2, 0.3);
+      avatar.mesh.scale.set(1.5, 1.5, 1.5);
+
+      const newCustomization = {
+        ...testPreset.customization,
+        colors: {
+          skin: '#ffffff',
+          hair: '#000000',
+          clothing: '#ff0000',
+        },
+      };
+
+      avatarSystem.updateAvatar('test_avatar', newCustomization);
+
+      const updatedAvatar = avatarSystem.getAvatar('test_avatar');
+      expect(updatedAvatar?.mesh.position.x).toBe(1);
+      expect(updatedAvatar?.mesh.position.y).toBe(2);
+      expect(updatedAvatar?.mesh.position.z).toBe(3);
+      expect(updatedAvatar?.mesh.rotation.x).toBeCloseTo(0.1);
+      expect(updatedAvatar?.mesh.rotation.y).toBeCloseTo(0.2);
+      expect(updatedAvatar?.mesh.rotation.z).toBeCloseTo(0.3);
+      expect(updatedAvatar?.mesh.scale.x).toBe(1.5);
+    });
+
+    it('should update accessories when customization changes', async () => {
+      await avatarSystem.initialize(mockCanvas);
+      avatarSystem.createAvatar(testPreset);
+
+      const newCustomization = {
+        ...testPreset.customization,
+        accessories: {
+          hat: 'cap',
+          weapon: 'sword',
+          shield: 'round',
+        },
+      };
+
+      avatarSystem.updateAvatar('test_avatar', newCustomization);
+
+      const avatar = avatarSystem.getAvatar('test_avatar');
+      expect(avatar?.customization.accessories).toEqual(newCustomization.accessories);
+      
+      // Check that accessories are in the mesh
+      const accessoryCount = avatar?.mesh.children.filter((child: any) => 
+        child.name.includes('accessory')
+      ).length;
+      expect(accessoryCount).toBe(3);
+    });
+
     it('should throw error when updating non-existent avatar', async () => {
       await avatarSystem.initialize(mockCanvas);
 
       expect(() => {
         avatarSystem.updateAvatar('non_existent', testPreset.customization);
       }).toThrow('Avatar non_existent not found');
+    });
+
+    it('should throw error when updating with invalid customization data', async () => {
+      await avatarSystem.initialize(mockCanvas);
+      avatarSystem.createAvatar(testPreset);
+
+      const invalidCustomization = {
+        bodyParts: {
+          head: 'default',
+          // missing required fields
+        },
+        colors: {
+          skin: 'invalid-color',
+        },
+      };
+
+      expect(() => {
+        avatarSystem.updateAvatar('test_avatar', invalidCustomization as any);
+      }).toThrow('Invalid customization data');
     });
   });
 
