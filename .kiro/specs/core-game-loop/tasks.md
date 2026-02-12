@@ -215,8 +215,8 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test WebGL fallback
     - _Requirements: 8.1, 8.2, 8.3, 8.8, 12.7_
 
-- [ ] 13. Implement Audio System
-  - [ ] 13.1 Create WebAudioManager class
+- [x] 13. Implement Audio System
+  - [x] 13.1 Create WebAudioManager class
     - Implement `loadSound()` method
     - Implement `playSound()` method
     - Implement `playMusic()` method
