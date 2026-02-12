@@ -93,12 +93,12 @@ This implementation plan breaks down the Avatar Framework into discrete coding t
 
 
 - [ ] 5. Implement avatar presets and preset manager
-  - [ ] 5.1 Define default presets for player and AI
+  - [x] 5.1 Define default presets for player and AI
     - Create PLAYER_PRESET and AI_PRESET constants
     - Define customization data for each preset
     - _Requirements: 4.1, 4.2_
   
-  - [ ] 5.2 Create PresetManagerImpl class
+  - [x] 5.2 Create PresetManagerImpl class
     - Implement getPreset(), getAllPresets(), createPreset(), savePreset()
     - Initialize with default presets
     - _Requirements: 4.1, 4.2_
