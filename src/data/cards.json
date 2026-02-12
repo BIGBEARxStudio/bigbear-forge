@@ -1,0 +1,125 @@
+{
+  "version": "1.0.0",
+  "cards": [
+    {
+      "id": "card_001",
+      "name": "Swift Strike",
+      "type": "attack",
+      "rarity": "common",
+      "stats": {
+        "attack": 8,
+        "defense": 2,
+        "speed": 9
+      },
+      "artwork": "/assets/cards/swift-strike.png"
+    },
+    {
+      "id": "card_002",
+      "name": "Iron Shield",
+      "type": "defense",
+      "rarity": "common",
+      "stats": {
+        "attack": 2,
+        "defense": 10,
+        "speed": 3
+      },
+      "artwork": "/assets/cards/iron-shield.png"
+    },
+    {
+      "id": "card_003",
+      "name": "Lightning Bolt",
+      "type": "speed",
+      "rarity": "rare",
+      "stats": {
+        "attack": 6,
+        "defense": 1,
+        "speed": 10
+      },
+      "artwork": "/assets/cards/lightning-bolt.png"
+    },
+    {
+      "id": "card_004",
+      "name": "Heavy Slam",
+      "type": "attack",
+      "rarity": "common",
+      "stats": {
+        "attack": 10,
+        "defense": 3,
+        "speed": 4
+      },
+      "artwork": "/assets/cards/heavy-slam.png"
+    },
+    {
+      "id": "card_005",
+      "name": "Barrier",
+      "type": "defense",
+      "rarity": "rare",
+      "stats": {
+        "attack": 1,
+        "defense": 12,
+        "speed": 5
+      },
+      "artwork": "/assets/cards/barrier.png"
+    },
+    {
+      "id": "card_006",
+      "name": "Quick Jab",
+      "type": "speed",
+      "rarity": "common",
+      "stats": {
+        "attack": 5,
+        "defense": 2,
+        "speed": 8
+      },
+      "artwork": "/assets/cards/quick-jab.png"
+    },
+    {
+      "id": "card_007",
+      "name": "Power Surge",
+      "type": "special",
+      "rarity": "epic",
+      "stats": {
+        "attack": 12,
+        "defense": 4,
+        "speed": 6
+      },
+      "artwork": "/assets/cards/power-surge.png"
+    },
+    {
+      "id": "card_008",
+      "name": "Balanced Strike",
+      "type": "attack",
+      "rarity": "common",
+      "stats": {
+        "attack": 7,
+        "defense": 5,
+        "speed": 6
+      },
+      "artwork": "/assets/cards/balanced-strike.png"
+    },
+    {
+      "id": "card_009",
+      "name": "Fortress",
+      "type": "defense",
+      "rarity": "epic",
+      "stats": {
+        "attack": 3,
+        "defense": 15,
+        "speed": 2
+      },
+      "artwork": "/assets/cards/fortress.png"
+    },
+    {
+      "id": "card_010",
+      "name": "Meteor Strike",
+      "type": "special",
+      "rarity": "legendary",
+      "stats": {
+        "attack": 15,
+        "defense": 5,
+        "speed": 7
+      },
+      "artwork": "/assets/cards/meteor-strike.png"
+    }
+  ]
+}

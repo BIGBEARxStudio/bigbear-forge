@@ -69,23 +69,23 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test state persistence and restoration
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8_
 
-- [ ] 5. Checkpoint - Ensure core systems work
+- [x] 5. Checkpoint - Ensure core systems work
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Implement Card Data System
-  - [ ] 6.1 Create Card and CardDatabase TypeScript interfaces
+- [x] 6. Implement Card Data System
+  - [x] 6.1 Create Card and CardDatabase TypeScript interfaces
     - Define Card schema with id, name, type, rarity, stats, artwork
     - Define CardDatabase schema with version and cards array
     - Create JSON schema validator
     - _Requirements: 6.1, 6.3, 6.6_
   
-  - [ ] 6.2 Create starter card database JSON file
+  - [x] 6.2 Create starter card database JSON file
     - Define 10 starter cards with simple stats
     - Include card artwork paths
     - Validate against schema
     - _Requirements: 6.4_
   
-  - [ ] 6.3 Implement card loading and deck generation
+  - [x] 6.3 Implement card loading and deck generation
     - Load card database from JSON at game start
     - Implement `createDeck()` function (20 cards, shuffled)
     - Implement `shuffleDeck()` function
