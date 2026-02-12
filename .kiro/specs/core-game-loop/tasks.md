@@ -152,8 +152,8 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test HP updates
     - _Requirements: 4.2_
 
-- [ ] 9. Implement AI Opponent System
-  - [ ] 9.1 Create EasyAI class
+- [x] 9. Implement AI Opponent System
+  - [x] 9.1 Create EasyAI class
     - Implement `selectCard()` method with random selection
     - Implement `getPlayDelay()` method (1-2 second random delay)
     - Implement `shouldMakeSuboptimalMove()` method (30% chance)
