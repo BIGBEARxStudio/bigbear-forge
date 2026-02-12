@@ -8,6 +8,8 @@ import type { Avatar, AvatarPreset, AnimationState, CustomizationData } from '@/
 import type { ThreeJSDependencies } from './AvatarSystemDI';
 import { defaultThreeJSDependencies } from './AvatarSystemDI';
 import { isWebGLAvailable } from './WebGLDetection';
+import { AvatarMeshBuilderImpl } from './AvatarMeshBuilder';
+import type { AvatarParts } from './AvatarMeshBuilder';
 
 export class AvatarSystemImpl {
   private scene: THREE.Scene | null = null;
@@ -17,9 +19,11 @@ export class AvatarSystemImpl {
   private animationFrameId: number | null = null;
   private dependencies: ThreeJSDependencies;
   private canvas: HTMLCanvasElement | null = null;
+  private meshBuilder: AvatarMeshBuilderImpl;
 
   constructor(dependencies: ThreeJSDependencies = defaultThreeJSDependencies) {
     this.dependencies = dependencies;
+    this.meshBuilder = new AvatarMeshBuilderImpl();
   }
 
   isWebGLAvailable(): boolean {
@@ -110,8 +114,48 @@ export class AvatarSystemImpl {
   }
 
   createAvatar(preset: AvatarPreset): Avatar {
-    // Placeholder implementation - will be completed in later tasks
-    const mesh = new THREE.Group();
+    const { customization } = preset;
+
+    // Build avatar parts
+    const parts: AvatarParts = {
+      head: this.meshBuilder.buildHead(
+        customization.bodyParts.head,
+        customization.colors.skin
+      ),
+      torso: this.meshBuilder.buildTorso(
+        customization.bodyParts.torso,
+        customization.colors.clothing
+      ),
+      arms: this.meshBuilder.buildArms(
+        customization.bodyParts.arms,
+        customization.colors.skin
+      ),
+      legs: this.meshBuilder.buildLegs(
+        customization.bodyParts.legs,
+        customization.colors.clothing
+      ),
+      accessories: [],
+    };
+
+    // Add accessories if present
+    if (customization.accessories.hat) {
+      parts.accessories.push(
+        this.meshBuilder.buildAccessory(customization.accessories.hat, 'head')
+      );
+    }
+    if (customization.accessories.weapon) {
+      parts.accessories.push(
+        this.meshBuilder.buildAccessory(customization.accessories.weapon, 'rightHand')
+      );
+    }
+    if (customization.accessories.shield) {
+      parts.accessories.push(
+        this.meshBuilder.buildAccessory(customization.accessories.shield, 'leftHand')
+      );
+    }
+
+    // Assemble avatar
+    const mesh = this.meshBuilder.assembleAvatar(parts);
     mesh.name = `avatar_${preset.id}`;
 
     if (this.scene) {
@@ -160,18 +204,11 @@ export class AvatarSystemImpl {
       if (this.scene) {
         this.scene.remove(avatar.mesh);
       }
-      avatar.mesh.traverse((child: any) => {
-        if (child instanceof THREE.Mesh) {
-          child.geometry.dispose();
-          if (Array.isArray(child.material)) {
-            child.material.forEach((m) => m.dispose());
-          } else {
-            child.material.dispose();
-          }
-        }
-      });
     });
     this.avatars.clear();
+
+    // Clear mesh builder cache (disposes geometries and materials)
+    this.meshBuilder.clearCache();
 
     // Dispose renderer
     if (this.renderer) {
