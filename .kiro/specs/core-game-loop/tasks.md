@@ -238,8 +238,8 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test sound load failure recovery
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8_
 
-- [ ] 14. Implement Input System
-  - [ ] 14.1 Create UnifiedInputHandler class
+- [x] 14. Implement Input System
+  - [x] 14.1 Create UnifiedInputHandler class
     - Implement mouse input handling (click, drag, hover)
     - Implement keyboard input handling (arrow keys, Enter, Esc)
     - Implement touch input handling (tap, drag)
@@ -264,11 +264,11 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test input flood throttling
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-- [ ] 15. Checkpoint - Ensure all systems integrated
+- [x] 15. Checkpoint - Ensure all systems integrated
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 16. Implement Scene Management System
-  - [ ] 16.1 Create Scene interface and SceneManager class
+- [-] 16. Implement Scene Management System
+  - [x] 16.1 Create Scene interface and SceneManager class
     - Define Scene interface (load, enter, exit, update, cleanup)
     - Implement SceneManager with scene registration and transitions
     - Implement fade/wipe transition animations
