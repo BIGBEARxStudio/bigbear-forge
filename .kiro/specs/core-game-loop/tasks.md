@@ -194,8 +194,8 @@ This implementation plan builds the foundational gameplay system for a premium b
     - **Property 19: Draw condition triggers on simultaneous zero HP**
     - **Validates: Requirements 7.1, 7.2, 7.3**
 
-- [ ] 12. Implement Animation System
-  - [ ] 12.1 Create AnimationTimeline class with GSAP
+- [x] 12. Implement Animation System
+  - [x] 12.1 Create AnimationTimeline class with GSAP
     - Implement `cardDraw()` timeline (slide in with overshoot)
     - Implement `cardPlay()` timeline (arc motion)
     - Implement `cardAttack()` timeline (lunge forward)
