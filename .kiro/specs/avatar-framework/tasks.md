@@ -210,7 +210,7 @@ This implementation plan breaks down the Avatar Framework into discrete coding t
     - Test animation triggers for each combat event
     - _Requirements: 6.5, 6.6_
 
-- [ ] 11. Checkpoint - Ensure animation and combat integration tests pass
+- [x] 11. Checkpoint - Ensure animation and combat integration tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 12. Implement State Persistence with localStorage
