@@ -40,30 +40,30 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test tab switch scenario (large delta time)
     - _Requirements: 1.1, 1.2, 1.6_
 
-- [ ] 3. Create Zustand store for game state
+- [x] 3. Create Zustand store for game state
   - Define GameStore interface with game loop, combat, cards, battlefield, and UI state
   - Implement actions for game loop control (start, stop, pause, resume)
   - Implement actions for combat flow (playCard, drawCard, etc.)
   - Integrate game loop with store (call store actions in onTick)
   - _Requirements: 1.7, 2.8_
 
-- [ ] 4. Implement Combat State Machine
-  - [ ] 4.1 Create XState combat machine with all states
+- [x] 4. Implement Combat State Machine
+  - [x] 4.1 Create XState combat machine with all states
     - Define states: IDLE, PLAYER_TURN, CARD_PLAY, RESOLVE, AI_TURN, CHECK_WIN, END
     - Define events and transitions between states
     - Implement guards for win/loss/draw conditions
     - Add state persistence to sessionStorage
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8_
   
-  - [ ]* 4.2 Write property test for state machine transitions
+  - [x]* 4.2 Write property test for state machine transitions
     - **Property 5: Combat state machine transitions are valid**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7**
   
-  - [ ]* 4.3 Write property test for state serialization
+  - [x]* 4.3 Write property test for state serialization
     - **Property 6: Combat state serialization round trip**
     - **Validates: Requirements 2.8**
   
-  - [ ]* 4.4 Write unit tests for state machine
+  - [x]* 4.4 Write unit tests for state machine
     - Test each state transition path
     - Test win/loss/draw condition detection
     - Test state persistence and restoration
