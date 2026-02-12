@@ -177,11 +177,11 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test suboptimal move frequency
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 10. Checkpoint - Ensure game logic is complete
+- [x] 10. Checkpoint - Ensure game logic is complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Implement Win/Loss Condition System
-  - [ ] 11.1 Add win condition checks to combat state machine
+- [x] 11. Implement Win/Loss Condition System
+  - [x] 11.1 Add win condition checks to combat state machine
     - Implement CHECK_WIN state logic
     - Check player HP for loss condition
     - Check opponent HP for win condition
