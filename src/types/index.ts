@@ -44,3 +44,47 @@ export interface GameLoopConfig {
   onTick: (deltaTime: number) => void;
   onPerformanceWarning: (frameTime: number) => void;
 }
+
+// Avatar Framework Types
+export type AnimationState = 'idle' | 'attack' | 'defend' | 'victory' | 'defeat' | 'damaged';
+
+export interface CustomizationData {
+  bodyParts: {
+    head: string;
+    torso: string;
+    arms: string;
+    legs: string;
+  };
+  colors: {
+    skin: string;
+    hair: string;
+    clothing: string;
+  };
+  accessories: {
+    hat?: string;
+    weapon?: string;
+    shield?: string;
+  };
+}
+
+export interface Avatar {
+  id: string;
+  mesh: any; // THREE.Group
+  animationController: any; // AnimationController
+  customization: CustomizationData;
+}
+
+export interface AvatarSystem {
+  initialize(canvas: HTMLCanvasElement): Promise<void>;
+  createAvatar(preset: AvatarPreset): Avatar;
+  updateAvatar(avatarId: string, customization: CustomizationData): void;
+  playAnimation(avatarId: string, state: AnimationState): void;
+  dispose(): void;
+  isWebGLAvailable(): boolean;
+}
+
+export interface AvatarPreset {
+  id: string;
+  name: string;
+  customization: CustomizationData;
+}
