@@ -144,8 +144,8 @@ This implementation plan breaks down the Avatar Framework into discrete coding t
     - _Requirements: 5.1, 5.3, 5.4, 5.5_
 
 
-- [ ] 8. Implement Camera Controller with orbit and zoom
-  - [ ] 8.1 Create CameraControllerImpl class
+- [x] 8. Implement Camera Controller with orbit and zoom
+  - [x] 8.1 Create CameraControllerImpl class
     - Implement setTarget(), orbit(), zoom(), update(), reset()
     - Add spherical coordinate calculations
     - Implement smooth damping/interpolation
@@ -189,13 +189,13 @@ This implementation plan breaks down the Avatar Framework into discrete coding t
     - _Requirements: 8.1, 8.2, 8.3_
 
 
-- [ ] 10. Implement Combat Integration with XState
-  - [ ] 10.1 Create AvatarCombatIntegration class
+- [x] 10. Implement Combat Integration with XState
+  - [x] 10.1 Create AvatarCombatIntegration class
     - Implement CombatEventListener interface
     - Add methods: onPlayerAttack(), onAIAttack(), onPlayerDamaged(), onAIDamaged(), onVictory(), onDefeat()
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
   
-  - [ ] 10.2 Create setupAvatarIntegration() function
+  - [x] 10.2 Create setupAvatarIntegration() function
     - Subscribe to combat state machine transitions
     - Map state transitions to avatar animation triggers
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
