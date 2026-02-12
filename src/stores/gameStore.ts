@@ -22,6 +22,8 @@ interface CardState {
   playerDeck: Card[];
   opponentDeck: Card[];
   selectedCardIndex: number | null;
+  isDragging: boolean;
+  dragPosition: { x: number; y: number } | null;
 }
 
 interface UIState {
@@ -62,6 +64,8 @@ interface GameStore {
   selectCard: (index: number | null) => void;
   playCard: (cardIndex: number) => void;
   drawCard: () => void;
+  setIsDragging: (isDragging: boolean) => void;
+  setDragPosition: (position: { x: number; y: number } | null) => void;
   
   // Battlefield actions
   setBattlefield: (battlefield: BattlefieldState) => void;
@@ -97,6 +101,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     playerDeck: [],
     opponentDeck: [],
     selectedCardIndex: null,
+    isDragging: false,
+    dragPosition: null,
   },
   
   battlefield: {
@@ -294,6 +300,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
         playerHand: [...state.cards.playerHand, drawnCard],
         playerDeck: remainingDeck,
       },
+    }));
+  },
+  
+  setIsDragging: (isDragging) => {
+    set((state) => ({
+      cards: { ...state.cards, isDragging },
+    }));
+  },
+  
+  setDragPosition: (position) => {
+    set((state) => ({
+      cards: { ...state.cards, dragPosition: position },
     }));
   },
   
