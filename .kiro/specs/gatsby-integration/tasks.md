@@ -45,14 +45,14 @@ Wire up the core game loop and avatar framework into Gatsby pages to create a pl
     - Loading states
     - Error boundaries
 
-- [ ] 4. Integrate Main Menu Scene
-  - [ ] 4.1 Create MainMenuScene React wrapper
+- [x] 4. Integrate Main Menu Scene
+  - [x] 4.1 Create MainMenuScene React wrapper
     - Start Battle button
     - Settings button
     - Avatar customization preview
     - Background music
   
-  - [ ] 4.2 Wire up scene transitions
+  - [x] 4.2 Wire up scene transitions
     - Transition to combat scene
     - Fade/wipe animations
     - Loading screen
