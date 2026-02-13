@@ -20,14 +20,14 @@ Wire up the core game loop and avatar framework into Gatsby pages to create a pl
     - Custom themed 404
     - Link back to home
 
-- [ ] 2. Create Layout Components
-  - [ ] 2.1 Create GameLayout component
+- [x] 2. Create Layout Components
+  - [x] 2.1 Create GameLayout component
     - Full-screen container
     - Scene container
     - UI overlay layer
     - Performance monitor integration
   
-  - [ ] 2.2 Create MenuLayout component
+  - [x] 2.2 Create MenuLayout component
     - Centered content container
     - Background animations
     - Responsive navigation
