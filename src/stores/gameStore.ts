@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import { GameLoop } from '@/systems/GameLoop';
-import type { Card, BattlefieldState } from '@/types';
+import type { Card, BattlefieldState, CustomizationData, AnimationState } from '@/types';
+import { AvatarSystemImpl } from '@/systems/AvatarSystem';
+import { AnimationControllerImpl } from '@/systems/AnimationController';
+import { CameraControllerImpl } from '@/systems/CameraController';
+import { LocalStoragePersistence } from '@/systems/AvatarPersistence';
+import { PLAYER_PRESET, AI_PRESET } from '@/systems/AvatarPresets';
+import * as THREE from 'three';
 
 interface GameLoopState {
   isRunning: boolean;
@@ -32,6 +38,31 @@ interface UIState {
   showPauseMenu: boolean;
 }
 
+interface AvatarState {
+  player: {
+    id: string;
+    customization: CustomizationData;
+    currentAnimation: AnimationState;
+  };
+  ai: {
+    id: string;
+    customization: CustomizationData;
+    currentAnimation: AnimationState;
+  };
+}
+
+interface CameraState {
+  distance: number;
+  azimuthAngle: number;
+  polarAngle: number;
+}
+
+interface SystemState {
+  isWebGLAvailable: boolean;
+  useFallback: boolean;
+  performanceMode: 'high' | 'medium' | 'low';
+}
+
 interface GameStore {
   // State
   gameLoop: GameLoopState;
@@ -39,9 +70,17 @@ interface GameStore {
   cards: CardState;
   battlefield: BattlefieldState;
   ui: UIState;
+  avatars: AvatarState;
+  camera: CameraState;
+  system: SystemState;
   
   // Game Loop instance
   gameLoopInstance: GameLoop | null;
+  
+  // Avatar system instances
+  avatarSystem: AvatarSystemImpl | null;
+  cameraController: CameraControllerImpl | null;
+  persistence: LocalStoragePersistence;
   
   // Actions
   startGameLoop: () => void;
@@ -77,6 +116,23 @@ interface GameStore {
   
   // Scene transition
   transitionScene: (sceneName: string) => Promise<void>;
+  
+  // Avatar actions
+  initializeAvatarSystem: (canvas: HTMLCanvasElement) => Promise<void>;
+  updateAvatarCustomization: (avatarId: 'player' | 'ai', customization: CustomizationData) => void;
+  playAvatarAnimation: (avatarId: 'player' | 'ai', state: AnimationState) => void;
+  
+  // Camera actions
+  orbitCamera: (deltaX: number, deltaY: number) => void;
+  zoomCamera: (delta: number) => void;
+  resetCamera: () => void;
+  
+  // Persistence actions
+  saveCustomization: (avatarId: 'player' | 'ai') => void;
+  loadCustomization: (avatarId: 'player' | 'ai') => void;
+  
+  // Cleanup
+  disposeAvatarSystem: () => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -86,6 +142,31 @@ export const useGameStore = create<GameStore>((set, get) => ({
     isPaused: false,
     fps: 0,
     frameTime: 0,
+  },
+  
+  avatars: {
+    player: {
+      id: 'player',
+      customization: PLAYER_PRESET.customization,
+      currentAnimation: 'idle',
+    },
+    ai: {
+      id: 'ai',
+      customization: AI_PRESET.customization,
+      currentAnimation: 'idle',
+    },
+  },
+  
+  camera: {
+    distance: 5,
+    azimuthAngle: 0,
+    polarAngle: Math.PI / 4,
+  },
+  
+  system: {
+    isWebGLAvailable: true,
+    useFallback: false,
+    performanceMode: 'high',
   },
   
   combat: {
@@ -125,6 +206,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   gameLoopInstance: null,
+  avatarSystem: null,
+  cameraController: null,
+  persistence: new LocalStoragePersistence(),
   
   // Game Loop Actions
   startGameLoop: () => {
@@ -141,8 +225,24 @@ export const useGameStore = create<GameStore>((set, get) => ({
           const frameTime = loop.getFrameTime();
           get().updateGameLoopMetrics(fps, frameTime);
           
-          // Game logic updates happen here
-          // (will be integrated with combat state machine later)
+          // Update camera controller
+          const { cameraController, avatarSystem } = get();
+          if (cameraController) {
+            cameraController.update(deltaTime);
+          }
+          
+          // Update avatar animations
+          if (avatarSystem) {
+            const playerAvatar = avatarSystem.getAvatar('player');
+            const aiAvatar = avatarSystem.getAvatar('ai');
+            
+            if (playerAvatar?.animationController) {
+              playerAvatar.animationController.update(deltaTime);
+            }
+            if (aiAvatar?.animationController) {
+              aiAvatar.animationController.update(deltaTime);
+            }
+          }
         },
         onPerformanceWarning: (frameTime) => {
           console.warn(`Performance warning: Frame time ${frameTime.toFixed(2)}ms exceeds 16.67ms`);
@@ -351,5 +451,210 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set((state) => ({
       ui: { ...state.ui, currentScene: sceneName, isTransitioning: false },
     }));
+  },
+  
+  // Avatar Actions
+  initializeAvatarSystem: async (canvas) => {
+    const avatarSystem = new AvatarSystemImpl();
+    
+    // Check WebGL availability
+    const isWebGLAvailable = avatarSystem.isWebGLAvailable();
+    
+    set((state) => ({
+      system: { ...state.system, isWebGLAvailable },
+    }));
+    
+    if (!isWebGLAvailable) {
+      console.warn('WebGL not available, avatar system not initialized');
+      set((state) => ({
+        system: { ...state.system, useFallback: true },
+      }));
+      return;
+    }
+    
+    try {
+      // Initialize avatar system
+      await avatarSystem.initialize(canvas);
+      
+      // Load saved customizations or use defaults
+      const { persistence, avatars } = get();
+      const playerCustomization = persistence.loadCustomization('player') || PLAYER_PRESET.customization;
+      const aiCustomization = persistence.loadCustomization('ai') || AI_PRESET.customization;
+      
+      // Create avatars
+      const playerAvatar = avatarSystem.createAvatar({
+        id: 'player',
+        name: 'Player',
+        customization: playerCustomization,
+      });
+      
+      const aiAvatar = avatarSystem.createAvatar({
+        id: 'ai',
+        name: 'AI',
+        customization: aiCustomization,
+      });
+      
+      // Position avatars
+      playerAvatar.mesh.position.set(-2, 0, 0);
+      aiAvatar.mesh.position.set(2, 0, 0);
+      
+      // Create animation controllers
+      const playerAnimController = new AnimationControllerImpl(playerAvatar.mesh);
+      const aiAnimController = new AnimationControllerImpl(aiAvatar.mesh);
+      
+      playerAvatar.animationController = playerAnimController;
+      aiAvatar.animationController = aiAnimController;
+      
+      // Create camera controller
+      const camera = avatarSystem.getCamera();
+      if (camera) {
+        const cameraController = new CameraControllerImpl(camera);
+        cameraController.setTarget(new THREE.Vector3(0, 1, 0));
+        
+        set({
+          avatarSystem,
+          cameraController,
+          avatars: {
+            player: {
+              ...avatars.player,
+              customization: playerCustomization,
+            },
+            ai: {
+              ...avatars.ai,
+              customization: aiCustomization,
+            },
+          },
+        });
+      } else {
+        set({ avatarSystem });
+      }
+    } catch (error) {
+      console.error('Failed to initialize avatar system:', error);
+      set((state) => ({
+        system: { ...state.system, useFallback: true },
+      }));
+    }
+  },
+  
+  updateAvatarCustomization: (avatarId, customization) => {
+    const { avatarSystem } = get();
+    
+    if (!avatarSystem) {
+      console.warn('Avatar system not initialized');
+      return;
+    }
+    
+    try {
+      avatarSystem.updateAvatar(avatarId, customization);
+      
+      set((state) => ({
+        avatars: {
+          ...state.avatars,
+          [avatarId]: {
+            ...state.avatars[avatarId],
+            customization,
+          },
+        },
+      }));
+    } catch (error) {
+      console.error(`Failed to update avatar ${avatarId}:`, error);
+    }
+  },
+  
+  playAvatarAnimation: (avatarId, state) => {
+    const { avatarSystem } = get();
+    
+    if (!avatarSystem) {
+      console.warn('Avatar system not initialized');
+      return;
+    }
+    
+    try {
+      const avatar = avatarSystem.getAvatar(avatarId);
+      if (avatar && avatar.animationController) {
+        avatar.animationController.playAnimation(state);
+        
+        set((prev) => ({
+          avatars: {
+            ...prev.avatars,
+            [avatarId]: {
+              ...prev.avatars[avatarId],
+              currentAnimation: state,
+            },
+          },
+        }));
+      }
+    } catch (error) {
+      console.error(`Failed to play animation for ${avatarId}:`, error);
+    }
+  },
+  
+  // Camera Actions
+  orbitCamera: (deltaX, deltaY) => {
+    const { cameraController } = get();
+    
+    if (!cameraController) {
+      console.warn('Camera controller not initialized');
+      return;
+    }
+    
+    cameraController.orbit(deltaX, deltaY);
+  },
+  
+  zoomCamera: (delta) => {
+    const { cameraController } = get();
+    
+    if (!cameraController) {
+      console.warn('Camera controller not initialized');
+      return;
+    }
+    
+    cameraController.zoom(delta);
+  },
+  
+  resetCamera: () => {
+    const { cameraController } = get();
+    
+    if (cameraController) {
+      cameraController.reset();
+    }
+    
+    // Always reset camera state in store
+    set({
+      camera: {
+        distance: 5,
+        azimuthAngle: 0,
+        polarAngle: Math.PI / 4,
+      },
+    });
+  },
+  
+  // Persistence Actions
+  saveCustomization: (avatarId) => {
+    const { persistence, avatars } = get();
+    const customization = avatars[avatarId].customization;
+    persistence.saveCustomization(avatarId, customization);
+  },
+  
+  loadCustomization: (avatarId) => {
+    const { persistence } = get();
+    const customization = persistence.loadCustomization(avatarId);
+    
+    if (customization) {
+      get().updateAvatarCustomization(avatarId, customization);
+    }
+  },
+  
+  // Cleanup
+  disposeAvatarSystem: () => {
+    const { avatarSystem } = get();
+    
+    if (avatarSystem) {
+      avatarSystem.dispose();
+      set({
+        avatarSystem: null,
+        cameraController: null,
+      });
+    }
   },
 }));
