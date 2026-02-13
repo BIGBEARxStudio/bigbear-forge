@@ -57,14 +57,14 @@ Wire up the core game loop and avatar framework into Gatsby pages to create a pl
     - Fade/wipe animations
     - Loading screen
 
-- [ ] 5. Integrate Combat Scene
-  - [ ] 5.1 Create CombatScene React wrapper
+- [x] 5. Integrate Combat Scene
+  - [x] 5.1 Create CombatScene React wrapper
     - Battlefield component integration
     - Card hand component integration
     - Avatar canvas integration
     - Turn indicator
   
-  - [ ] 5.2 Wire up combat state machine
+  - [x] 5.2 Wire up combat state machine
     - Player turn handling
     - AI turn handling
     - Win/loss detection

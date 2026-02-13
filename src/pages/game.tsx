@@ -4,6 +4,7 @@ import { GameLayout } from '@/components/GameLayout';
 import { GameController } from '@/components/GameController';
 import { SceneRenderer } from '@/components/SceneRenderer';
 import { MainMenuSceneComponent } from '@/components/MainMenuSceneComponent';
+import { CombatSceneComponent } from '@/components/CombatSceneComponent';
 import { useGameStore } from '@/stores/gameStore';
 
 /**
@@ -15,6 +16,22 @@ const GamePage: React.FC = () => {
 
   const handleSceneChange = (sceneName: string) => {
     console.log(`Scene changed to: ${sceneName}`);
+  };
+
+  const handleVictory = () => {
+    console.log('Victory!');
+    // Transition to victory scene (coming in Task 6)
+    if ((window as any).__sceneTransition) {
+      (window as any).__sceneTransition('victory');
+    }
+  };
+
+  const handleDefeat = () => {
+    console.log('Defeat!');
+    // Transition to defeat scene (coming in Task 6)
+    if ((window as any).__sceneTransition) {
+      (window as any).__sceneTransition('defeat');
+    }
   };
 
   return (
@@ -29,6 +46,12 @@ const GamePage: React.FC = () => {
           <SceneRenderer>
             {currentScene === 'mainMenu' && <MainMenuSceneComponent />}
             {currentScene === 'combat' && (
+              <CombatSceneComponent
+                onVictory={handleVictory}
+                onDefeat={handleDefeat}
+              />
+            )}
+            {(currentScene === 'victory' || currentScene === 'defeat') && (
               <div
                 style={{
                   display: 'flex',
@@ -41,10 +64,10 @@ const GamePage: React.FC = () => {
               >
                 <div style={{ textAlign: 'center' }}>
                   <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-                    Combat Scene
+                    {currentScene === 'victory' ? 'Victory!' : 'Defeat!'}
                   </h1>
                   <p style={{ fontSize: '1.2rem', color: '#a0a0a0' }}>
-                    Coming in Task 5
+                    Coming in Task 6
                   </p>
                 </div>
               </div>
