@@ -1,8 +1,9 @@
 import { Scene } from '../systems/SceneManager';
 import { WebAudioManager } from '../systems/WebAudioManager';
 import { GameLoop } from '../systems/GameLoop';
-import { createMachine, interpret, InterpreterFrom } from 'xstate';
-import { CombatContext, CombatEvent } from '../systems/CombatStateMachine';
+import { createMachine, interpret } from 'xstate';
+import { useGameStore } from '../stores/gameStore';
+import { AvatarCombatIntegration, setupAvatarIntegration, CombatStateSubscription } from '../systems/AvatarCombatIntegration';
 
 /**
  * CombatScene - Main gameplay scene
@@ -12,9 +13,11 @@ export class CombatScene implements Scene {
   name = 'combat';
   private audioManager: WebAudioManager | null = null;
   private gameLoop: GameLoop | null = null;
-  private combatMachine: InterpreterFrom<any> | null = null;
+  private combatMachine: any | null = null;
   private onVictoryCallback: (() => void) | null = null;
   private onDefeatCallback: (() => void) | null = null;
+  private avatarIntegration: AvatarCombatIntegration | null = null;
+  private avatarSubscription: CombatStateSubscription | null = null;
 
   constructor(audioManager?: WebAudioManager, gameLoop?: GameLoop) {
     this.audioManager = audioManager || null;
@@ -44,8 +47,14 @@ export class CombatScene implements Scene {
   }
 
   enter(): void {
+    // Initialize avatar system
+    this.initializeAvatars();
+
     // Initialize combat state machine
     this.initializeCombatMachine();
+
+    // Wire up avatar animations to combat events
+    this.setupAvatarCombatIntegration();
 
     // Start combat music
     if (this.audioManager) {
@@ -62,6 +71,9 @@ export class CombatScene implements Scene {
   }
 
   exit(): void {
+    // Save avatar customizations
+    this.saveAvatarCustomizations();
+
     // Pause game loop
     if (this.gameLoop) {
       this.gameLoop.pause();
@@ -76,12 +88,21 @@ export class CombatScene implements Scene {
     this.unmountUI();
   }
 
-  update(deltaTime: number): void {
+  update(_deltaTime: number): void {
     // Update combat state machine
     // In real implementation, this would update based on game state
   }
 
   cleanup(): void {
+    // Unsubscribe from avatar integration
+    if (this.avatarSubscription) {
+      this.avatarSubscription.unsubscribe();
+      this.avatarSubscription = null;
+    }
+
+    // Dispose avatar system
+    this.disposeAvatars();
+
     // Stop state machine
     if (this.combatMachine) {
       this.combatMachine.stop();
@@ -97,6 +118,7 @@ export class CombatScene implements Scene {
     // Release card assets
     this.onVictoryCallback = null;
     this.onDefeatCallback = null;
+    this.avatarIntegration = null;
   }
 
   /**
@@ -129,9 +151,20 @@ export class CombatScene implements Scene {
 
   private initializeCombatMachine(): void {
     // Create a minimal combat machine for testing
-    const machine = createMachine<CombatContext, CombatEvent>({
+    const machine = createMachine({
       id: 'combat',
       initial: 'IDLE',
+      context: {
+        playerHP: 100,
+        opponentHP: 100,
+        currentTurn: 'player' as 'player' | 'opponent',
+        selectedCard: null,
+        playerDeck: [],
+        opponentDeck: [],
+        playerHand: [],
+        opponentHand: [],
+        winner: null,
+      },
       states: {
         IDLE: {
           on: { START_COMBAT: 'PLAYER_TURN' },
@@ -166,5 +199,60 @@ export class CombatScene implements Scene {
     if (container) {
       container.innerHTML = '';
     }
+  }
+
+  private initializeAvatars(): void {
+    // Get canvas element for avatar rendering
+    const canvas = document.getElementById('avatar-canvas') as HTMLCanvasElement;
+    if (!canvas) {
+      console.warn('Avatar canvas not found, skipping avatar initialization');
+      return;
+    }
+
+    // Initialize avatar system through store
+    const store = useGameStore.getState();
+    store.initializeAvatarSystem(canvas).catch((error) => {
+      console.error('Failed to initialize avatars in combat scene:', error);
+    });
+
+    // Load saved customizations
+    store.loadCustomization('player');
+    store.loadCustomization('ai');
+  }
+
+  private setupAvatarCombatIntegration(): void {
+    if (!this.combatMachine) {
+      console.warn('Combat machine not initialized, skipping avatar integration');
+      return;
+    }
+
+    // Create avatar integration
+    const store = useGameStore.getState();
+    this.avatarIntegration = new AvatarCombatIntegration(
+      {
+        playAnimation: (avatarId: string, state: any) => {
+          store.playAvatarAnimation(avatarId as 'player' | 'ai', state);
+        },
+      },
+      'player',
+      'ai'
+    );
+
+    // Subscribe to combat state machine
+    this.avatarSubscription = setupAvatarIntegration(
+      this.combatMachine,
+      this.avatarIntegration
+    );
+  }
+
+  private saveAvatarCustomizations(): void {
+    const store = useGameStore.getState();
+    store.saveCustomization('player');
+    store.saveCustomization('ai');
+  }
+
+  private disposeAvatars(): void {
+    const store = useGameStore.getState();
+    store.disposeAvatarSystem();
   }
 }

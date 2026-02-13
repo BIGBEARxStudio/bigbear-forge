@@ -342,24 +342,24 @@ This implementation plan breaks down the Avatar Framework into discrete coding t
     - _Requirements: 1.1, 3.1, 7.3_
 
 
-- [ ] 17. Integrate avatar system with Combat Scene
-  - [ ] 17.1 Update CombatScene to initialize avatars
+- [x] 17. Integrate avatar system with Combat Scene
+  - [x] 17.1 Update CombatScene to initialize avatars
     - Create player and AI avatars on scene enter
     - Load customization from persistence
     - Position avatars on battlefield
     - _Requirements: 1.1, 4.1, 4.2, 9.3_
   
-  - [ ] 17.2 Wire up combat state machine to avatar animations
+  - [x] 17.2 Wire up combat state machine to avatar animations
     - Use setupAvatarIntegration() to connect combat events
     - Subscribe to state machine transitions
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
   
-  - [ ] 17.3 Add avatar cleanup to scene exit
+  - [x] 17.3 Add avatar cleanup to scene exit
     - Dispose avatar system resources
     - Save customization to persistence
     - _Requirements: 9.1, 12.1_
   
-  - [ ]* 17.4 Write integration tests for combat scene with avatars
+  - [x]* 17.4 Write integration tests for combat scene with avatars
     - Test complete battle flow with avatar animations
     - Test avatar persistence across scene transitions
     - Test cleanup on scene exit
