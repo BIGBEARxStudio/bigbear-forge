@@ -133,6 +133,9 @@ interface GameStore {
   
   // Cleanup
   disposeAvatarSystem: () => void;
+  
+  // Reset game state
+  resetGameState: () => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -656,5 +659,38 @@ export const useGameStore = create<GameStore>((set, get) => ({
         cameraController: null,
       });
     }
+  },
+  
+  // Reset game state
+  resetGameState: () => {
+    set({
+      combat: {
+        state: 'IDLE',
+        playerHP: 100,
+        opponentHP: 100,
+        currentTurn: 'player',
+      },
+      cards: {
+        playerHand: [],
+        opponentHand: [],
+        playerDeck: [],
+        opponentDeck: [],
+        selectedCardIndex: null,
+        isDragging: false,
+        dragPosition: null,
+      },
+      battlefield: {
+        playerSide: {
+          activeCard: null,
+          hp: 100,
+          maxHP: 100,
+        },
+        opponentSide: {
+          activeCard: null,
+          hp: 100,
+          maxHP: 100,
+        },
+      },
+    });
   },
 }));

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SceneManager } from '@/systems/SceneManager';
 import { useGameStore } from '@/stores/gameStore';
 import { AssetLoader } from '@/systems/AssetLoader';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
 export interface GameControllerProps {
   children: React.ReactNode;
@@ -21,6 +22,8 @@ export const GameController: React.FC<GameControllerProps> = ({
   const sceneManagerRef = useRef<SceneManager | null>(null);
   const assetLoaderRef = useRef<AssetLoader | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingMessage, setLoadingMessage] = useState('Initializing...');
 
   const startGameLoop = useGameStore((state) => state.startGameLoop);
   const stopGameLoop = useGameStore((state) => state.stopGameLoop);
@@ -30,23 +33,52 @@ export const GameController: React.FC<GameControllerProps> = ({
   useEffect(() => {
     // Initialize systems
     const initialize = async () => {
-      // Create scene manager
-      const sceneManager = new SceneManager();
-      sceneManager.setTransitionConfig({
-        type: 'fade',
-        duration: 0.3,
-        containerSelector: '#scene-container',
-      });
-      sceneManagerRef.current = sceneManager;
+      try {
+        // Create asset loader
+        const assetLoader = new AssetLoader();
+        assetLoaderRef.current = assetLoader;
 
-      // Create asset loader
-      const assetLoader = new AssetLoader();
-      assetLoaderRef.current = assetLoader;
+        // Load critical assets with progress tracking
+        setLoadingMessage('Loading assets...');
+        
+        // Simulate asset loading progress (in real implementation, AssetLoader would provide this)
+        const progressInterval = setInterval(() => {
+          setLoadingProgress((prev) => {
+            if (prev >= 90) {
+              clearInterval(progressInterval);
+              return 90;
+            }
+            return prev + 10;
+          });
+        }, 100);
 
-      // Start game loop
-      startGameLoop();
+        // Wait for assets to load (placeholder - AssetLoader doesn't have async load yet)
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        clearInterval(progressInterval);
+        setLoadingProgress(100);
 
-      setIsInitialized(true);
+        // Create scene manager
+        setLoadingMessage('Initializing scene manager...');
+        const sceneManager = new SceneManager();
+        sceneManager.setTransitionConfig({
+          type: 'fade',
+          duration: 0.3,
+          containerSelector: '#scene-container',
+        });
+        sceneManagerRef.current = sceneManager;
+
+        // Start game loop
+        setLoadingMessage('Starting game loop...');
+        startGameLoop();
+
+        // Small delay to show 100% completion
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('Failed to initialize game:', error);
+        setLoadingMessage('Failed to load game. Please refresh.');
+      }
     };
 
     initialize();
@@ -97,19 +129,11 @@ export const GameController: React.FC<GameControllerProps> = ({
 
   if (!isInitialized) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: '100%',
-          color: '#fff',
-        }}
+      <LoadingScreen
+        progress={loadingProgress}
+        message={loadingMessage}
         data-testid="game-controller-loading"
-      >
-        Initializing...
-      </div>
+      />
     );
   }
 

@@ -70,25 +70,25 @@ Wire up the core game loop and avatar framework into Gatsby pages to create a pl
     - Win/loss detection
     - Scene transition on completion
 
-- [ ] 6. Integrate Victory/Defeat Scene
-  - [ ] 6.1 Create VictoryDefeatScene React wrapper
+- [x] 6. Integrate Victory/Defeat Scene
+  - [x] 6.1 Create VictoryDefeatScene React wrapper
     - Victory/defeat message
     - Play Again button
     - Return to Menu button
     - Victory/defeat animations
   
-  - [ ] 6.2 Wire up scene transitions
+  - [x] 6.2 Wire up scene transitions
     - Transition to combat (play again)
     - Transition to main menu
     - State reset
 
-- [ ] 7. Implement Asset Loading
-  - [ ] 7.1 Create LoadingScreen component
+- [x] 7. Implement Asset Loading
+  - [x] 7.1 Create LoadingScreen component
     - Progress bar
     - Loading animation
     - Asset load progress tracking
   
-  - [ ] 7.2 Integrate AssetLoader
+  - [x] 7.2 Integrate AssetLoader
     - Preload critical assets
     - Lazy load scene assets
     - Cache management

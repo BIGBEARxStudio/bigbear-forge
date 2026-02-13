@@ -5,6 +5,7 @@ import { GameController } from '@/components/GameController';
 import { SceneRenderer } from '@/components/SceneRenderer';
 import { MainMenuSceneComponent } from '@/components/MainMenuSceneComponent';
 import { CombatSceneComponent } from '@/components/CombatSceneComponent';
+import { VictoryDefeatSceneComponent } from '@/components/VictoryDefeatSceneComponent';
 import { useGameStore } from '@/stores/gameStore';
 
 /**
@@ -18,9 +19,10 @@ const GamePage: React.FC = () => {
     console.log(`Scene changed to: ${sceneName}`);
   };
 
+  const resetGameState = useGameStore((state) => state.resetGameState);
+
   const handleVictory = () => {
     console.log('Victory!');
-    // Transition to victory scene (coming in Task 6)
     if ((window as any).__sceneTransition) {
       (window as any).__sceneTransition('victory');
     }
@@ -28,9 +30,22 @@ const GamePage: React.FC = () => {
 
   const handleDefeat = () => {
     console.log('Defeat!');
-    // Transition to defeat scene (coming in Task 6)
     if ((window as any).__sceneTransition) {
       (window as any).__sceneTransition('defeat');
+    }
+  };
+
+  const handlePlayAgain = () => {
+    resetGameState();
+    if ((window as any).__sceneTransition) {
+      (window as any).__sceneTransition('combat');
+    }
+  };
+
+  const handleReturnToMenu = () => {
+    resetGameState();
+    if ((window as any).__sceneTransition) {
+      (window as any).__sceneTransition('mainMenu');
     }
   };
 
@@ -52,25 +67,11 @@ const GamePage: React.FC = () => {
               />
             )}
             {(currentScene === 'victory' || currentScene === 'defeat') && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  height: '100%',
-                  color: '#fff',
-                }}
-              >
-                <div style={{ textAlign: 'center' }}>
-                  <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-                    {currentScene === 'victory' ? 'Victory!' : 'Defeat!'}
-                  </h1>
-                  <p style={{ fontSize: '1.2rem', color: '#a0a0a0' }}>
-                    Coming in Task 6
-                  </p>
-                </div>
-              </div>
+              <VictoryDefeatSceneComponent
+                isVictory={currentScene === 'victory'}
+                onPlayAgain={handlePlayAgain}
+                onReturnToMenu={handleReturnToMenu}
+              />
             )}
           </SceneRenderer>
         </GameController>
