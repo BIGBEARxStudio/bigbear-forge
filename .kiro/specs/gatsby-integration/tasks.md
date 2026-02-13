@@ -94,26 +94,26 @@ Wire up the core game loop and avatar framework into Gatsby pages to create a pl
     - Cache management
     - Error handling
 
-- [ ] 8. Implement Error Handling
-  - [ ] 8.1 Create GameErrorBoundary
+- [x] 8. Implement Error Handling
+  - [x] 8.1 Create GameErrorBoundary
     - Catch React errors
     - Display error message
     - Retry button
     - Return to menu option
   
-  - [ ] 8.2 Implement error recovery
+  - [x] 8.2 Implement error recovery
     - Asset loading retry
     - Scene loading fallback
     - State recovery
 
-- [ ] 9. Add Keyboard Controls
-  - [ ] 9.1 Implement keyboard navigation
+- [x] 9. Add Keyboard Controls
+  - [x] 9.1 Implement keyboard navigation
     - Tab navigation
     - Enter/Space activation
     - Arrow key card selection
     - Escape for pause/menu
   
-  - [ ] 9.2 Add keyboard shortcuts
+  - [x] 9.2 Add keyboard shortcuts
     - Number keys for card selection
     - P for pause
     - M for mute

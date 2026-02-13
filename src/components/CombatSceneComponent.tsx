@@ -4,6 +4,7 @@ import { useGameStore } from '@/stores/gameStore';
 import { BattlefieldComponent } from './BattlefieldComponent';
 import { CardHandComponent } from './CardHandComponent';
 import { AvatarCanvas } from './AvatarCanvas';
+import { useKeyboardControls } from '@/hooks/useKeyboardControls';
 
 export interface CombatSceneComponentProps {
   onVictory?: () => void;
@@ -31,6 +32,53 @@ export const CombatSceneComponent: React.FC<CombatSceneComponentProps> = ({
 
   // Battlefield state
   const battlefield = useGameStore((state) => state.battlefield);
+
+  // Keyboard controls
+  useKeyboardControls({
+    // Card selection with arrow keys
+    onArrowLeft: () => {
+      if (selectedCardIndex === null) {
+        selectCard(0);
+      } else if (selectedCardIndex > 0) {
+        selectCard(selectedCardIndex - 1);
+      }
+    },
+    onArrowRight: () => {
+      if (selectedCardIndex === null) {
+        selectCard(0);
+      } else if (selectedCardIndex < playerHand.length - 1) {
+        selectCard(selectedCardIndex + 1);
+      }
+    },
+    // Play selected card with Enter or Space
+    onEnterActivate: () => {
+      if (selectedCardIndex !== null && currentTurn === 'player') {
+        playCard(selectedCardIndex);
+      }
+    },
+    onSpaceActivate: () => {
+      if (selectedCardIndex !== null && currentTurn === 'player') {
+        playCard(selectedCardIndex);
+      }
+    },
+    // Number keys for direct card selection
+    onNumberKey: (number) => {
+      const cardIndex = number - 1;
+      if (cardIndex >= 0 && cardIndex < playerHand.length) {
+        if (currentTurn === 'player') {
+          selectCard(cardIndex);
+          playCard(cardIndex);
+        }
+      }
+    },
+    // Escape to deselect card
+    onEscape: () => {
+      selectCard(null);
+    },
+    enableNavigation: true,
+    enableCardSelection: true,
+    enableGameControls: false,
+  });
 
   // Check win/loss conditions
   useEffect(() => {

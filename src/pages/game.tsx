@@ -6,6 +6,7 @@ import { SceneRenderer } from '@/components/SceneRenderer';
 import { MainMenuSceneComponent } from '@/components/MainMenuSceneComponent';
 import { CombatSceneComponent } from '@/components/CombatSceneComponent';
 import { VictoryDefeatSceneComponent } from '@/components/VictoryDefeatSceneComponent';
+import { GameErrorBoundary } from '@/components/GameErrorBoundary';
 import { useGameStore } from '@/stores/gameStore';
 
 /**
@@ -20,6 +21,7 @@ const GamePage: React.FC = () => {
   };
 
   const resetGameState = useGameStore((state) => state.resetGameState);
+  const setCurrentScene = useGameStore((state) => state.setCurrentScene);
 
   const handleVictory = () => {
     console.log('Victory!');
@@ -49,6 +51,19 @@ const GamePage: React.FC = () => {
     }
   };
 
+  const handleErrorRetry = () => {
+    // Reset to main menu on error retry
+    resetGameState();
+    setCurrentScene('mainMenu');
+  };
+
+  const handleErrorReturnToMenu = () => {
+    // Navigate to home page
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -57,24 +72,29 @@ const GamePage: React.FC = () => {
       </Helmet>
 
       <GameLayout showPerformanceMonitor={false}>
-        <GameController initialScene="mainMenu" onSceneChange={handleSceneChange}>
-          <SceneRenderer>
-            {currentScene === 'mainMenu' && <MainMenuSceneComponent />}
-            {currentScene === 'combat' && (
-              <CombatSceneComponent
-                onVictory={handleVictory}
-                onDefeat={handleDefeat}
-              />
-            )}
-            {(currentScene === 'victory' || currentScene === 'defeat') && (
-              <VictoryDefeatSceneComponent
-                isVictory={currentScene === 'victory'}
-                onPlayAgain={handlePlayAgain}
-                onReturnToMenu={handleReturnToMenu}
-              />
-            )}
-          </SceneRenderer>
-        </GameController>
+        <GameErrorBoundary
+          onRetry={handleErrorRetry}
+          onReturnToMenu={handleErrorReturnToMenu}
+        >
+          <GameController initialScene="mainMenu" onSceneChange={handleSceneChange}>
+            <SceneRenderer>
+              {currentScene === 'mainMenu' && <MainMenuSceneComponent />}
+              {currentScene === 'combat' && (
+                <CombatSceneComponent
+                  onVictory={handleVictory}
+                  onDefeat={handleDefeat}
+                />
+              )}
+              {(currentScene === 'victory' || currentScene === 'defeat') && (
+                <VictoryDefeatSceneComponent
+                  isVictory={currentScene === 'victory'}
+                  onPlayAgain={handlePlayAgain}
+                  onReturnToMenu={handleReturnToMenu}
+                />
+              )}
+            </SceneRenderer>
+          </GameController>
+        </GameErrorBoundary>
       </GameLayout>
     </>
   );
