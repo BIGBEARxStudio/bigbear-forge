@@ -5,6 +5,7 @@ import { BattlefieldComponent } from './BattlefieldComponent';
 import { CardHandComponent } from './CardHandComponent';
 import { AvatarCanvas } from './AvatarCanvas';
 import { useKeyboardControls } from '@/hooks/useKeyboardControls';
+import { useScreenReader } from '@/hooks/useScreenReader';
 
 export interface CombatSceneComponentProps {
   onVictory?: () => void;
@@ -32,6 +33,23 @@ export const CombatSceneComponent: React.FC<CombatSceneComponentProps> = ({
 
   // Battlefield state
   const battlefield = useGameStore((state) => state.battlefield);
+
+  // Screen reader announcements
+  const { announce } = useScreenReader();
+
+  // Announce turn changes
+  useEffect(() => {
+    if (currentTurn === 'player') {
+      announce('Your turn. Select a card to play.', 'polite');
+    } else {
+      announce('Opponent turn. Please wait.', 'polite');
+    }
+  }, [currentTurn, announce]);
+
+  // Announce HP changes
+  useEffect(() => {
+    announce(`Player health: ${playerHP}. Opponent health: ${opponentHP}.`, 'polite');
+  }, [playerHP, opponentHP, announce]);
 
   // Keyboard controls
   useKeyboardControls({
@@ -83,11 +101,13 @@ export const CombatSceneComponent: React.FC<CombatSceneComponentProps> = ({
   // Check win/loss conditions
   useEffect(() => {
     if (opponentHP <= 0 && onVictory) {
+      announce('Victory! You have defeated your opponent!', 'assertive');
       onVictory();
     } else if (playerHP <= 0 && onDefeat) {
+      announce('Defeat! You have been defeated.', 'assertive');
       onDefeat();
     }
-  }, [playerHP, opponentHP, onVictory, onDefeat]);
+  }, [playerHP, opponentHP, onVictory, onDefeat, announce]);
 
   return (
     <div
@@ -143,6 +163,9 @@ export const CombatSceneComponent: React.FC<CombatSceneComponentProps> = ({
             fontWeight: 'bold',
           }}
           data-testid="turn-indicator"
+          role="status"
+          aria-live="polite"
+          aria-label={`Current turn: ${currentTurn === 'player' ? 'Your turn' : 'Opponent turn'}`}
         >
           {currentTurn === 'player' ? '🎮 Your Turn' : '🤖 Opponent Turn'}
         </motion.div>

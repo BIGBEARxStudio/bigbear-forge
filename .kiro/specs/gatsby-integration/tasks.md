@@ -118,24 +118,24 @@ Wire up the core game loop and avatar framework into Gatsby pages to create a pl
     - P for pause
     - M for mute
 
-- [ ] 10. Add Accessibility Features
-  - [ ] 10.1 Add ARIA labels
+- [x] 10. Add Accessibility Features
+  - [x] 10.1 Add ARIA labels
     - Button labels
     - Game state announcements
     - Card descriptions
   
-  - [ ] 10.2 Add screen reader support
+  - [x] 10.2 Add screen reader support
     - Announce turn changes
     - Announce combat results
     - Describe card stats
 
-- [ ] 11. Implement Settings
-  - [ ] 11.1 Create Settings component
+- [x] 11. Implement Settings
+  - [x] 11.1 Create Settings component
     - Volume controls
     - Performance monitor toggle
     - Reduced motion option
   
-  - [ ] 11.2 Persist settings
+  - [x] 11.2 Persist settings
     - Save to localStorage
     - Load on page load
     - Apply settings to systems
