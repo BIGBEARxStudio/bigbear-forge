@@ -67,8 +67,10 @@ const GamePage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Play - BigBear Portfolio Game</title>
-        <meta name="description" content="Play the BigBear card battle game" />
+        <title>Play Game - BigBear Portfolio Game</title>
+        <meta name="description" content="Play the BigBear card battle game. Experience strategic combat with 3D avatars and smooth 60 FPS gameplay." />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://bigbear-forge.com/game" />
       </Helmet>
 
       <GameLayout showPerformanceMonitor={false}>

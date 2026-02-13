@@ -17,14 +17,77 @@ const IndexPage: React.FC = () => {
         <title>BigBear Portfolio Game - Premium Card Battle</title>
         <meta
           name="description"
-          content="A premium browser-based portfolio card game showcasing elite game design and development skills."
+          content="A premium browser-based portfolio card game showcasing elite game design and development skills. Built with React, TypeScript, Three.js, and modern web technologies."
         />
-        <meta property="og:title" content="BigBear Portfolio Game" />
+        <meta name="keywords" content="card game, browser game, portfolio, React, TypeScript, Three.js, game development" />
+        <meta name="author" content="Orlando - BigBear Studio" />
+        
+        {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://bigbear-forge.com/" />
+        <meta property="og:title" content="BigBear Portfolio Game - Premium Card Battle" />
         <meta
           property="og:description"
-          content="Premium card battle game built with React, TypeScript, and Three.js"
+          content="Premium card battle game built with React, TypeScript, and Three.js. Experience 60 FPS gameplay with 3D avatars and strategic combat."
         />
+        <meta property="og:image" content="https://bigbear-forge.com/og-image.jpg" />
+        <meta property="og:site_name" content="BigBear Portfolio Game" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://bigbear-forge.com/" />
+        <meta name="twitter:title" content="BigBear Portfolio Game - Premium Card Battle" />
+        <meta
+          name="twitter:description"
+          content="Premium card battle game built with React, TypeScript, and Three.js. Experience 60 FPS gameplay with 3D avatars and strategic combat."
+        />
+        <meta name="twitter:image" content="https://bigbear-forge.com/twitter-image.jpg" />
+        
+        {/* Additional Meta Tags */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#667eea" />
+        <link rel="canonical" href="https://bigbear-forge.com/" />
+        
+        {/* Structured Data - VideoGame Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'VideoGame',
+            name: 'BigBear Portfolio Game',
+            description: 'A premium browser-based card battle game showcasing elite game design and development skills.',
+            genre: 'Card Battle',
+            playMode: 'SinglePlayer',
+            gamePlatform: 'Web Browser',
+            author: {
+              '@type': 'Person',
+              name: 'Orlando',
+              affiliation: {
+                '@type': 'Organization',
+                name: 'BigBear Studio',
+              },
+            },
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD',
+              availability: 'https://schema.org/InStock',
+            },
+            applicationCategory: 'Game',
+            operatingSystem: 'Any',
+          })}
+        </script>
+        
+        {/* Structured Data - Organization Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'BigBear Studio',
+            url: 'https://bigbear-forge.com',
+            logo: 'https://bigbear-forge.com/logo.png',
+            description: 'Elite game development studio specializing in premium web-based gaming experiences.',
+          })}
+        </script>
       </Helmet>
 
       <div
