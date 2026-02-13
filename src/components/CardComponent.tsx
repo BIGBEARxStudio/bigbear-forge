@@ -51,6 +51,7 @@ export const CardComponent: React.FC<CardComponentProps> = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        willChange: isHovered || isSelected ? 'transform, opacity' : 'auto',
       }}
       animate={{
         scale: isHovered ? 1.05 : 1,
@@ -146,6 +147,7 @@ export const CardComponent: React.FC<CardComponentProps> = ({
             border: '2px solid #4CAF50',
             borderRadius: '8px',
             pointerEvents: 'none',
+            willChange: 'opacity',
           }}
           animate={{
             opacity: [1, 0.5, 1],

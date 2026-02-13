@@ -128,6 +128,7 @@ export const PerformanceMonitorComponent: React.FC<
           style={{
             height: '100%',
             backgroundColor: fpsColor,
+            willChange: 'transform',
           }}
           initial={{ width: '0%' }}
           animate={{ width: `${(fps / 60) * 100}%` }}

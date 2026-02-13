@@ -86,6 +86,7 @@ export const BattlefieldComponent: React.FC<BattlefieldComponentProps> = ({
               style={{
                 height: '100%',
                 backgroundColor: '#f44336',
+                willChange: 'transform',
               }}
               initial={{ width: '100%' }}
               animate={{ width: `${opponentHPPercent}%` }}
@@ -107,6 +108,7 @@ export const BattlefieldComponent: React.FC<BattlefieldComponentProps> = ({
               border: '2px solid #f44336',
               minWidth: '120px',
               textAlign: 'center',
+              willChange: 'transform, opacity',
             }}
           >
             <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff' }}>
@@ -172,6 +174,7 @@ export const BattlefieldComponent: React.FC<BattlefieldComponentProps> = ({
               minWidth: '120px',
               textAlign: 'center',
               marginBottom: '16px',
+              willChange: 'transform, opacity',
             }}
           >
             <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#fff' }}>
@@ -212,6 +215,7 @@ export const BattlefieldComponent: React.FC<BattlefieldComponentProps> = ({
               style={{
                 height: '100%',
                 backgroundColor: '#4CAF50',
+                willChange: 'transform',
               }}
               initial={{ width: '100%' }}
               animate={{ width: `${playerHPPercent}%` }}
@@ -239,6 +243,7 @@ export const BattlefieldComponent: React.FC<BattlefieldComponentProps> = ({
               color: '#f44336',
               textShadow: '0 0 4px rgba(0, 0, 0, 0.8)',
               pointerEvents: 'none',
+              willChange: 'transform, opacity',
             }}
           >
             -{damage.value}

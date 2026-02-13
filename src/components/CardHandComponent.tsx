@@ -84,6 +84,9 @@ export const CardHandComponent: React.FC<CardHandComponentProps> = ({
               damping: 25,
               delay: index * 0.05,
             }}
+            style={{
+              willChange: 'transform, opacity',
+            }}
           >
             <CardComponent
               card={card}

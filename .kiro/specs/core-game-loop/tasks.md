@@ -310,41 +310,41 @@ This implementation plan builds the foundational gameplay system for a premium b
     - Test scene load failure recovery
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-- [ ] 17. Build React UI Components
-  - [ ] 17.1 Create CardComponent with Framer Motion
+- [x] 17. Build React UI Components
+  - [x] 17.1 Create CardComponent with Framer Motion
     - Display card with stats (attack, defense, speed)
     - Implement hover glow effect
     - Implement selection outline
     - Implement drag preview
     - _Requirements: 3.2, 3.3, 3.4, 3.5_
   
-  - [ ] 17.2 Create CardHandComponent
+  - [x] 17.2 Create CardHandComponent
     - Display 3-5 cards in hand
     - Wire up card selection and drag events
     - Integrate with Zustand store
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
   
-  - [ ] 17.3 Create BattlefieldComponent
+  - [x] 17.3 Create BattlefieldComponent
     - Display player and opponent sides
     - Display health bars
     - Display active cards
     - Animate damage numbers
     - _Requirements: 4.1, 4.3, 4.4, 4.5, 4.6_
   
-  - [ ] 17.4 Create PerformanceMonitorComponent
+  - [x] 17.4 Create PerformanceMonitorComponent
     - Display FPS counter
     - Display frame time
     - Show performance warnings
     - _Requirements: 1.5, 1.6_
 
-- [ ] 18. Implement Performance Optimization
-  - [ ] 18.1 Add code splitting and lazy loading
+- [x] 18. Implement Performance Optimization
+  - [x] 18.1 Add code splitting and lazy loading
     - Split scenes into separate bundles
     - Lazy load card assets
     - Lazy load audio assets
     - _Requirements: 11.4, 12.3_
   
-  - [ ] 18.2 Optimize animations for GPU
+  - [x] 18.2 Optimize animations for GPU
     - Ensure all animations use transform/opacity only
     - Add will-change hints
     - Implement animation cleanup on unmount
